@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
+from textwrap import TextWrapper
+
+
+wrap=True   # edit to change
+
 
 def encodings():
     '''http://stackoverflow.com/a/1728414/874188'''
@@ -34,6 +39,18 @@ def encodings():
     found.difference_update(exclude)
     return found
 
+
+def wraplines (lines):
+    t = TextWrapper(initial_indent=lines[0],
+        subsequent_indent=' ' * len(lines[0]))
+    return '\n'.join(t.wrap(*lines[1:]))
+
+
+if wrap:
+    wrapper=wraplines
+else:
+    wrapper=lambda x: x
+
 codecs = encodings()
 result = dict()
 
@@ -53,8 +70,9 @@ for ch in xrange(128,256,1):
     for glyph in sorted(result[ch].keys()):
         if glyph == 'undefined':
             continue
-        print(("  %s (%r): %s" % (glyph, glyph,
-            ", ".join(sorted(result[ch][glyph])))).encode('utf-8'))
+        print(wrapper(['  %s (%r): ' % (glyph, glyph),
+            ', '.join(sorted(result[ch][glyph]))]).encode('utf-8'))
     if 'undefined' in result[ch]:
-        print("  (undefined): %s" % ", ".join(result[ch]['undefined']))
-    print("")
+        print(wrapper(['  (undefined): ',
+            ', '.join(sorted(result[ch]['undefined']))]).encode('utf-8'))
+    print('')
