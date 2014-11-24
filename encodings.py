@@ -9,7 +9,7 @@ def encodings():
     import encodings
 
     exclude=set(['aliases',
-        # Exclude binary encodings
+        # Exclude binary encodings, ascii encodings, reserved encodings, etc
         'bz2_codec', 'punycode', 'hex_codec', 'uu_codec', 'unicode_internal',
         'quopri_codec', 'raw_unicode_escape', 'unicode_escape', 'base64_codec',
         'zlib_codec', 'charmap', 'ascii', 'string_escape', 'rot_13',
