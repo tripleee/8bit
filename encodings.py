@@ -70,7 +70,7 @@ for ch in xrange(128,256,1):
     for glyph in sorted(result[ch].keys()):
         if glyph == 'undefined':
             continue
-        print(wrapper(['  %s (%r): ' % (glyph, glyph),
+        print(wrapper(['  %s%s (%r): ' % (glyph, u'\u200e', glyph),
             ', '.join(sorted(result[ch][glyph]))]).encode('utf-8'))
     if 'undefined' in result[ch]:
         print(wrapper(['  (undefined): ',
