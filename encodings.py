@@ -30,6 +30,7 @@ def encodings():
 
     found=set(name for im, name, ispkg in
         pkgutil.iter_modules(encodings.__path__))
+    exclude = exclude.union(set(encodings.aliases.aliases.keys()))
     found.difference_update(exclude)
     return found
 
