@@ -53,7 +53,8 @@ for ch in xrange(128,256,1):
     for glyph in sorted(result[ch].keys()):
         if glyph == 'undefined':
             continue
-        print(("  %s (%r): %s" % (glyph, glyph, ", ".join(result[ch][glyph]))).encode('utf-8'))
+        print(("  %s (%r): %s" % (glyph, glyph,
+            ", ".join(sorted(result[ch][glyph])))).encode('utf-8'))
     if 'undefined' in result[ch]:
         print("  (undefined): %s" % ", ".join(result[ch]['undefined']))
     print("")
