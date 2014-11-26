@@ -9,8 +9,13 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('-w', '--wrap', dest='wrap', action='store_true',
     help='Wrap output for limited column width')
+parser.add_option('-H', '--html', dest='html', action='store_true',
+    help='Generate HTML output')
 (options, args) = parser.parse_args()
 
+
+if options.wrap and options.html:
+    raise KeyError('Cannot specify --wrap and --html at the same time')
 
 def encodings():
     '''http://stackoverflow.com/a/1728414/874188'''
@@ -55,11 +60,38 @@ if options.wrap:
 else:
     wrapper=lambda x: ''.join(x)
 
+if options.html:
+    print('''<!DOCTYPE html>
+<html lang="en" class="">
+    <meta charset='utf-8'>
+    <meta http-equiv="Content-Encoding" content="utf-8">
+    <meta http-equiv="Content-Language" content="en">
+    <title>encodings.html</title>
+    <body>
+     <h1>Table of Legacy 8-bit Encodings</h1>
+      <p>This table was generated from
+      <a href="https://github.com/tripleee/8bit/">
+        https://github.com/tripleee/8bit/</a>
+      and contains a map of the character codes 0x80-0xff
+      in the various 8-bit encodings known by the Python version
+      which generated this page.</p>
+      <p>You can link to individual character codes with an anchor
+      like <a href="#0xaf">encodings.html#0xaf</a> -- just edit the link
+      in the Location: bar of your browser.</p>
+''')
+    title = lambda x: '<a name="%s"><h3>%s</h3></a>\n<p><table>' % (x, x)
+    row = lambda x: '<tr><td>%s</td><td>%s</td>\n' % (x[0], x[1])
+    done = lambda: '</table></body></html>'
+else:
+    title = lambda x: x
+    row = lambda x: wrapper(x)
+    done = lambda: ''
+
 codecs = encodings()
 result = dict()
 
 for ch in xrange(128,256,1):
-    print("0x%02x" % ch)
+    print(title('0x%02x' % ch))
     char = chr(ch)
     result[ch] = defaultdict(list)
     for enc in codecs:
@@ -74,9 +106,9 @@ for ch in xrange(128,256,1):
     for glyph in sorted(result[ch].keys()):
         if glyph == 'undefined':
             continue
-        print(wrapper(['  %s%s (%r): ' % (glyph, u'\u200e', glyph),
+        print(row(['  %s%s (%r): ' % (glyph, u'\u200e', glyph),
             ', '.join(sorted(result[ch][glyph]))]).encode('utf-8'))
     if 'undefined' in result[ch]:
-        print(wrapper(['  (undefined): ',
+        print(row(['  (undefined): ',
             ', '.join(sorted(result[ch]['undefined']))]).encode('utf-8'))
-    print('')
+    print(done())
