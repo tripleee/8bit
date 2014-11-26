@@ -81,11 +81,13 @@ if options.html:
 ''')
     title = lambda x: '<a name="%s"><h3>%s</h3></a>\n<p><table>' % (x, x)
     row = lambda x: '<tr><td>%s</td><td>%s</td>\n' % (x[0], x[1])
-    done = lambda: '</table></body></html>'
+    enddiv = lambda: '</table>'
+    done = lambda: '</body></html>'
 else:
     title = lambda x: x
     row = lambda x: wrapper(x)
-    done = lambda: ''
+    enddiv = lambda: ''
+    done = lambda: None
 
 codecs = encodings()
 result = dict()
@@ -111,4 +113,6 @@ for ch in xrange(128,256,1):
     if 'undefined' in result[ch]:
         print(row(['  (undefined): ',
             ', '.join(sorted(result[ch]['undefined']))]).encode('utf-8'))
+    print(enddiv())
+if options.html:
     print(done())
