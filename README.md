@@ -15,6 +15,9 @@ Output
 
 This is the output of the program on Debian Squeeze (Python 2.6.6).
 
+There is also a HTML-generated output page at
+https://cdn.rawgit.com/tripleee/8bit/master/encodings.html
+
     0x80
       ‎ (u'\x80'): cp1006, hp_roman8, iso8859_10, iso8859_11, iso8859_13,
 		    iso8859_14, iso8859_15, iso8859_16, iso8859_2,
