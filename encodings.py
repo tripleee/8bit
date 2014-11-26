@@ -49,7 +49,7 @@ def wraplines (lines):
 if wrap:
     wrapper=wraplines
 else:
-    wrapper=lambda x: x
+    wrapper=lambda x: ''.join(x)
 
 codecs = encodings()
 result = dict()
