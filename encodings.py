@@ -3,9 +3,13 @@
 
 from collections import defaultdict
 from textwrap import TextWrapper
+from optparse import OptionParser
 
 
-wrap=True   # edit to change
+parser = OptionParser()
+parser.add_option('-w', '--wrap', dest='wrap', action='store_true',
+    help='Wrap output for limited column width')
+(options, args) = parser.parse_args()
 
 
 def encodings():
@@ -46,7 +50,7 @@ def wraplines (lines):
     return '\n'.join(t.wrap(*lines[1:]))
 
 
-if wrap:
+if options.wrap:
     wrapper=wraplines
 else:
     wrapper=lambda x: ''.join(x)
