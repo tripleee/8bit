@@ -91,11 +91,14 @@ if options.html:
 ''' % (strftime('%c'), python_version(), node().split('.')[0]))
     title = lambda x: '<a name="%s"><h3>%s</h3></a>\n<p><table>' % (x, x)
     row = lambda x: '<tr><th>%s</th><td>%s</td>\n' % (x[0], x[1])
+    rep = lambda x: '<a href="http://www.fileformat.info/' \
+        'info/unicode/char/%04X/">U+%04X</a>' % (ord(x), ord(x))
     enddiv = lambda: '</table>'
     done = lambda: '</body></html>'
 else:
     title = lambda x: x
     row = lambda x: wrapper(x)
+    rep = lambda x: repr(x)
     enddiv = lambda: ''
     done = lambda: None
 
@@ -118,7 +121,7 @@ for ch in xrange(128,256,1):
     for glyph in sorted(result[ch].keys()):
         if glyph == 'undefined':
             continue
-        print(row(['  %s%s (%r): ' % (glyph, u'\u200e', glyph),
+        print(row(['  %s%s (%s): ' % (glyph, u'\u200e', rep(glyph)),
             ', '.join(sorted(result[ch][glyph]))]).encode('utf-8'))
     if 'undefined' in result[ch]:
         print(row(['  (undefined): ',
