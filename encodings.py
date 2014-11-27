@@ -65,11 +65,13 @@ else:
 if options.html:
     print('''<!DOCTYPE html>
 <html lang="en" class="">
+  <head>
     <meta charset='utf-8'>
     <meta http-equiv="Content-Encoding" content="utf-8">
     <meta http-equiv="Content-Language" content="en">
-    <title>encodings.html</title>
-    <body>
+    <title>Table of Legacy 8-bit Encodings</title>
+  </head>
+  <body>
      <h1>Table of Legacy 8-bit Encodings</h1>
       <p>This table was generated from
       <a href="https://github.com/tripleee/8bit/">
