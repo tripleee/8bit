@@ -84,7 +84,8 @@ if options.html:
       <p>This page was generated on %s by Python %s on host <tt>%s</tt>.</p>
 ''' % (strftime('%c'), python_version(), node().split('.')[0]))
     title = lambda x: '<a name="%s"><h3>%s</h3></a>\n<p><table>' % (x, x)
-    row = lambda x: '<tr><td>%s</td><td>%s</td>\n' % (x[0], x[1])
+    row = lambda x: '<tr><th nowrap="nowrap">%s</th><td>%s</td>\n' % (
+        x[0], x[1])
     enddiv = lambda: '</table>'
     done = lambda: '</body></html>'
 else:
