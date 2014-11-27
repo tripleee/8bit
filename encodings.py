@@ -71,7 +71,8 @@ if options.html:
     <meta http-equiv="Content-Language" content="en">
     <title>Table of Legacy 8-bit Encodings</title>
     <style>
-      th { white-space: nowrap; }
+      th { white-space: nowrap; text-align: left; vertical-align: top; }
+      td { vertical-align: text-top; }
     </style>
   </head>
   <body>
