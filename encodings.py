@@ -86,8 +86,8 @@ if options.html:
       <p>You can link to individual character codes with an anchor
       like <a href="#0xaf">encodings.html#0xaf</a> -- just edit the link
       in the Location: bar of your browser.</p>
-      <hr>
       <p>This page was generated on %s by Python %s on host <tt>%s</tt>.</p>
+      <hr>
 ''' % (strftime('%c'), python_version(), node().split('.')[0]))
     title = lambda x: '<a name="%s"><h3>%s</h3></a>\n<p><table>' % (x, x)
     row = lambda x: '<tr><th>%s</th><td>%s</td>\n' % (x[0], x[1])
