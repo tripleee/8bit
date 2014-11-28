@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import encodings
+from pkgutil import iter_modules
 from collections import defaultdict
 from textwrap import TextWrapper
 from optparse import OptionParser
@@ -19,10 +21,8 @@ parser.add_option('-H', '--html', dest='html', action='store_true',
 if options.wrap and options.html:
     raise KeyError('Cannot specify --wrap and --html at the same time')
 
-def encodings():
+def get_encodings():
     '''http://stackoverflow.com/a/1728414/874188'''
-    import pkgutil
-    import encodings
 
     exclude=set(['aliases',
         # Exclude binary encodings, ascii encodings, reserved encodings, etc
@@ -44,8 +44,8 @@ def encodings():
         # Korean
         'euc_kr', 'iso2022_kr', 'johab', 'cp949'])
 
-    found=set(name for im, name, ispkg in
-        pkgutil.iter_modules(encodings.__path__))
+    
+    found=set(name for im, name, ispkg in iter_modules(encodings.__path__))
     exclude = exclude.union(set(encodings.aliases.aliases.keys()))
     found.difference_update(exclude)
     return found
@@ -102,7 +102,7 @@ else:
     enddiv = lambda: ''
     done = lambda: None
 
-codecs = encodings()
+codecs = get_encodings()
 result = dict()
 
 for ch in xrange(128,256,1):
