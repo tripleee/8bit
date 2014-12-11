@@ -80,23 +80,27 @@ if options.html:
       <p>This table was generated from
       <a href="https://github.com/tripleee/8bit/">
         https://github.com/tripleee/8bit/</a>
-      and contains a map of the character codes 0x80-0xff
+      and contains a map of the character codes 0x80-0xFF
       in the various 8-bit encodings known by the Python version
       which generated this page.</p>
-      <p>You can link to individual character codes with an anchor
-      like <a href="#0xaf">encodings.html#0xaf</a> -- just edit the link
-      in the Location: bar of your browser.</p>
-      <p>This page was generated on %s by Python %s on host <tt>%s</tt>.</p>
+      <p>Section headlines are clickable links so you can link to
+      or bookmark an individual character code.</p>
+      <p>This page was generated on %s by Python %s
+      on host <tt>%s</tt>.</p>
       <hr>
 ''' % (strftime('%c'), python_version(), node().split('.')[0]))
-    title = lambda x: '<a name="%s"><h3>%s</h3></a>\n<p><table>' % (x, x)
+    # Keep <a name="0xFF"> as a synonym for legacy links in this syntax
+    title = lambda x: '<h3><a name="%s">&bullet;</a>' \
+        '<a name="0x%s">&nbsp;</a>' \
+        '<a href="#%s">0x%s</a>' \
+        '</h3>\n<p><table>' % (x, x, x, x)
     row = lambda x: '<tr><th>%s</th><td>%s</td>\n' % (x[0], x[1])
     rep = lambda x: '<a href="http://www.fileformat.info/' \
         'info/unicode/char/%04X/">U+%04X</a>' % (ord(x), ord(x))
     enddiv = lambda: '</table>'
     done = lambda: '</body></html>'
 else:
-    title = lambda x: x
+    title = lambda x: '0x%s' % x
     row = lambda x: wrapper(x)
     rep = lambda x: repr(x)
     enddiv = lambda: ''
@@ -106,7 +110,7 @@ codecs = get_encodings()
 result = dict()
 
 for ch in xrange(128,256,1):
-    print(title('0x%02x' % ch))
+    print(title('%02x' % ch))
     char = chr(ch)
     result[ch] = defaultdict(list)
     for enc in codecs:
