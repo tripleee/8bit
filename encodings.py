@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import encodings
@@ -29,11 +29,12 @@ def get_encodings():
         'bz2_codec', 'punycode', 'hex_codec', 'uu_codec', 'unicode_internal',
         'quopri_codec', 'raw_unicode_escape', 'unicode_escape', 'base64_codec',
         'zlib_codec', 'charmap', 'ascii', 'string_escape', 'rot_13',
-        'undefined', 'idna',
+        'undefined', 'idna', 'oem',
         # Exclude multi-byte encodings: UTF-xx
         'mbcs', 'utf_7', 'utf_8', 'utf_8_sig',
         'utf_16', 'utf_16_be', 'utf_16_le',
         'utf_32', 'utf_32_be', 'utf_32_le',
+        'cp65001',
         # Chinese
         'big5hkscs', 'gbk', 'gb2312', 'hz', 'big5', 'gb18030', 'cp950',
         # Japanese
@@ -43,7 +44,6 @@ def get_encodings():
         'shift_jis', 'shift_jis_2004', 'shift_jisx0213', 'cp932',
         # Korean
         'euc_kr', 'iso2022_kr', 'johab', 'cp949'])
-
     
     found=set(name for im, name, ispkg in iter_modules(encodings.__path__))
     exclude = exclude.union(set(encodings.aliases.aliases.keys()))
@@ -109,16 +109,16 @@ else:
 codecs = get_encodings()
 result = dict()
 
-for ch in xrange(128,256,1):
+for ch in range(128,256,1):
     print(title('%02x' % ch))
-    char = chr(ch)
+    char = bytes([ch])
     result[ch] = defaultdict(list)
     for enc in codecs:
         try:
             code = char.decode(enc)
             result[ch][code].append(enc)
-        except UnicodeDecodeError, err:
-            if 'character maps to <undefined>' in err:
+        except UnicodeDecodeError as err:
+            if 'character maps to <undefined>' in str(err):
                 result[ch]['undefined'].append(enc)
             else:
                 raise
@@ -126,10 +126,10 @@ for ch in xrange(128,256,1):
         if glyph == 'undefined':
             continue
         print(row(['  %s%s (%s): ' % (glyph, u'\u200e', rep(glyph)),
-            ', '.join(sorted(result[ch][glyph]))]).encode('utf-8'))
+            ', '.join(sorted(result[ch][glyph]))]))
     if 'undefined' in result[ch]:
         print(row(['  (undefined): ',
-            ', '.join(sorted(result[ch]['undefined']))]).encode('utf-8'))
+            ', '.join(sorted(result[ch]['undefined']))]))
     print(enddiv())
 if options.html:
     print(done())
