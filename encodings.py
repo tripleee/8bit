@@ -6,7 +6,7 @@ from pkgutil import iter_modules
 from collections import defaultdict
 from textwrap import TextWrapper
 from optparse import OptionParser
-from platform import python_version, node
+from platform import python_version, uname
 from time import strftime
 
 
@@ -63,6 +63,10 @@ else:
     wrapper=lambda x: ''.join(x)
 
 if options.html:
+    # Simulate uname(1) -a output
+
+    sysinfo = ' '.join([getattr(u, attr) for u in (uname(),)
+        for attr in ['system', 'node', 'release', 'version', 'machine']])
     print('''<!DOCTYPE html>
 <html lang="en" class="">
   <head>
@@ -85,10 +89,10 @@ if options.html:
       which generated this page.</p>
       <p>Section headlines are clickable links so you can link to
       or bookmark an individual character code.</p>
-      <p>This page was generated on %s by Python %s
-      on host <tt>%s</tt>.</p>
+      <p>This page was generated on %s by Python %s<br/>
+      <tt>%s</tt>.</p>
       <hr>
-''' % (strftime('%c'), python_version(), node().split('.')[0]))
+''' % (strftime('%c'), python_version(), sysinfo))
     # Keep <a name="0xFF"> as a synonym for legacy links in this syntax
     title = lambda x: '<h3><a name="%s">&bullet;</a>' \
         '<a name="0x%s">&nbsp;</a>' \
