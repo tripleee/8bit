@@ -10,6 +10,7 @@ from platform import python_version, uname
 from time import strftime
 
 
+######## XXX FIXME: replace with argparse
 parser = OptionParser()
 parser.add_option('-w', '--wrap', dest='wrap', action='store_true',
     help='Wrap output for limited column width')
@@ -20,6 +21,107 @@ parser.add_option('-H', '--html', dest='html', action='store_true',
 
 if options.wrap and options.html:
     raise KeyError('Cannot specify --wrap and --html at the same time')
+
+# Force undefined to sort last
+UNDEFINED = '\U0001fffffundefined'
+
+
+class Formatter:
+    def __init__(self, wrapper=None):
+        self.wrapper = wrapper
+
+    def emit(self, message):
+        if message is not None:
+            print(message)
+
+    def header(self):
+        return None
+
+    def item(self, char):
+        return '0x%s' % char
+
+    def row(self, char, encodings):
+        if char == UNDEFINED:
+            header = '(undefined)'
+        else:
+            header = '  %s (U+%04x): ' % (char, ord(char))
+        if self.wrapper is not None:
+            return self.wrapper([header, encodings])
+        else:
+            return '%s: %s' % (header, encodings)
+
+    def enditem(self):
+        return None
+
+    def endsection(self):
+        return '-' * 72
+
+    def footer(self):
+        return None
+
+
+class HtmlFormatter(Formatter):
+    def header(self):
+        # Simulate uname(1) -a output        
+        sysinfo = ' '.join(
+            [getattr(u, attr) for u in (uname(),)
+             for attr in ['system', 'node', 'release', 'version', 'machine']])
+        return('''<!DOCTYPE html>
+<html lang="en" class="">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="Content-Encoding" content="utf-8">
+    <meta http-equiv="Content-Language" content="en">
+    <title>Table of Legacy 8-bit Encodings</title>
+    <style>
+      th { white-space: nowrap; text-align: left; vertical-align: top; }
+      td { vertical-align: text-top; }
+    </style>
+  </head>
+  <body>
+     <h1>Table of Legacy 8-bit Encodings</h1>
+      <p>This table was generated from
+      <a href="https://github.com/tripleee/8bit/">
+        https://github.com/tripleee/8bit/</a>
+      and contains a map of the character codes 0x00-0x31 and 0x80-0xFF
+      in the various 8-bit encodings known by the Python version
+      which generated this page.</p>
+      <p>Section headlines are clickable links so you can link to
+      or bookmark an individual character code.</p>
+      <p>This page was generated on %s by Python %s<br/>
+      <tt>%s</tt>.</p>
+      <hr>
+''' % (strftime('%c'), python_version(), sysinfo))
+
+    def item(self, char):
+        # Keep <a name="0xFF"> as a synonym for legacy links in this syntax
+        return '<h3><a name="%s">&bullet;</a>' \
+            '<a name="0x%s">&nbsp;</a>' \
+            '<a href="#%s">0x%s</a>' \
+            '</h3>\n<p><table>' % (char, char, char, char)
+
+    def row(self, char, encodings):
+        if char == UNDEFINED:
+            header = '</th><th>(undefined)'
+        else:
+            # hack
+            header = '&#%i;</th><th>(%s)' % (ord(char), self.rep(ord(char)))
+        return '<tr><th>&zwnj;</th><th>%s</th><td>%s</td>' % (
+            header, encodings)
+
+    def enditem(self):
+        return '</table></p>'
+
+    def rep(self, code):
+        return '<a href="http://www.fileformat.info/' \
+            'info/unicode/char/%04X/">U+%04X</a>' % (code, code)
+
+    def endsection(self):
+        return '\n<hr/>\n'
+
+    def footer(self):
+        return '</body></html>'
+
 
 def get_encodings():
     '''http://stackoverflow.com/a/1728414/874188'''
@@ -57,94 +159,36 @@ def wraplines (lines):
     return '\n'.join(t.wrap(*lines[1:]))
 
 
-if options.wrap:
-    wrapper=wraplines
-else:
-    wrapper=lambda x: ''.join(x)
+def get_mappings(ch, codecs):
+    result = dict()
+    char = bytes([ch])
+    result[ch] = defaultdict(list)
+    for enc in codecs:
+        try:
+            code = char.decode(enc)
+            result[ch][code].append(enc)
+        except UnicodeDecodeError as err:
+            if 'character maps to <undefined>' in str(err):
+                result[ch][UNDEFINED].append(enc)
+            else:
+                raise
+    for glyph in sorted(result[ch].keys()):
+        yield glyph, sorted(result[ch][glyph])
 
-if options.html:
-    # Simulate uname(1) -a output
-
-    sysinfo = ' '.join([getattr(u, attr) for u in (uname(),)
-        for attr in ['system', 'node', 'release', 'version', 'machine']])
-    print('''<!DOCTYPE html>
-<html lang="en" class="">
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="Content-Encoding" content="utf-8">
-    <meta http-equiv="Content-Language" content="en">
-    <title>Table of Legacy 8-bit Encodings</title>
-    <style>
-      th { white-space: nowrap; text-align: left; vertical-align: top; }
-      td { vertical-align: text-top; }
-    </style>
-  </head>
-  <body>
-     <h1>Table of Legacy 8-bit Encodings</h1>
-      <p>This table was generated from
-      <a href="https://github.com/tripleee/8bit/">
-        https://github.com/tripleee/8bit/</a>
-      and contains a map of the character codes 0x00-0x31 and 0x80-0xFF
-      in the various 8-bit encodings known by the Python version
-      which generated this page.</p>
-      <p>Section headlines are clickable links so you can link to
-      or bookmark an individual character code.</p>
-      <p>This page was generated on %s by Python %s<br/>
-      <tt>%s</tt>.</p>
-      <hr>
-''' % (strftime('%c'), python_version(), sysinfo))
-    # Keep <a name="0xFF"> as a synonym for legacy links in this syntax
-    title = lambda x: '<h3><a name="%s">&bullet;</a>' \
-        '<a name="0x%s">&nbsp;</a>' \
-        '<a href="#%s">0x%s</a>' \
-        '</h3>\n<p><table>' % (x, x, x, x)
-    row = lambda x: '<tr><th>%s</th><td>%s</td>\n' % (x[0], x[1])
-    rep = lambda x: '<a href="http://www.fileformat.info/' \
-        'info/unicode/char/%04X/">U+%04X</a>' % (ord(x), ord(x))
-    enddiv = lambda: '</table>'
-    done = lambda: '</body></html>'
-else:
-    title = lambda x: '0x%s' % x
-    row = lambda x: wrapper(x)
-    rep = lambda x: repr(x)
-    enddiv = lambda: ''
-    done = lambda: None
-
-codecs = get_encodings()
-result = dict()
-
-def printrange(start, end):
+def printrange(start, end, codecs):
     for ch in range(start, end):
-        print(title('%02x' % ch))
-        char = bytes([ch])
-        result[ch] = defaultdict(list)
-        for enc in codecs:
-            try:
-                code = char.decode(enc)
-                result[ch][code].append(enc)
-            except UnicodeDecodeError as err:
-                if 'character maps to <undefined>' in str(err):
-                    result[ch]['undefined'].append(enc)
-                else:
-                    raise
-        for glyph in sorted(result[ch].keys()):
-            if glyph == 'undefined':
-                continue
-            print(row(['  %s%s (%s): ' % (glyph, u'\u200e', rep(glyph)),
-                ', '.join(sorted(result[ch][glyph]))]))
-        if 'undefined' in result[ch]:
-            print(row(['  (undefined): ',
-                ', '.join(sorted(result[ch]['undefined']))]))
-        print(enddiv())
+        formatter.emit(formatter.item('%02x' % ch))
+        for glyph, encodings in get_mappings(ch, codecs):
+            formatter.emit(formatter.row(glyph, ', '.join(encodings)))
+        formatter.emit(formatter.enditem())
 
-printrange(0, 32)
 
-if options.html:
-    print('<hr>')
-else:
-    print("-" * 72)
+formatter = HtmlFormatter() if options.html else Formatter(
+    wrapper=wraplines if options.wrap else None)
+codecs = get_encodings()
 
-printrange(128, 256)
-
-if options.html:
-    print(done())
+formatter.emit(formatter.header())
+printrange(0, 32, codecs)
+formatter.emit(formatter.endsection())
+printrange(128, 256, codecs)
+formatter.emit(formatter.footer())
