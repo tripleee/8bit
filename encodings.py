@@ -84,7 +84,7 @@ if options.html:
       <p>This table was generated from
       <a href="https://github.com/tripleee/8bit/">
         https://github.com/tripleee/8bit/</a>
-      and contains a map of the character codes 0x80-0xFF
+      and contains a map of the character codes 0x00-0x31 and 0x80-0xFF
       in the various 8-bit encodings known by the Python version
       which generated this page.</p>
       <p>Section headlines are clickable links so you can link to
@@ -113,27 +113,38 @@ else:
 codecs = get_encodings()
 result = dict()
 
-for ch in range(128,256,1):
-    print(title('%02x' % ch))
-    char = bytes([ch])
-    result[ch] = defaultdict(list)
-    for enc in codecs:
-        try:
-            code = char.decode(enc)
-            result[ch][code].append(enc)
-        except UnicodeDecodeError as err:
-            if 'character maps to <undefined>' in str(err):
-                result[ch]['undefined'].append(enc)
-            else:
-                raise
-    for glyph in sorted(result[ch].keys()):
-        if glyph == 'undefined':
-            continue
-        print(row(['  %s%s (%s): ' % (glyph, u'\u200e', rep(glyph)),
-            ', '.join(sorted(result[ch][glyph]))]))
-    if 'undefined' in result[ch]:
-        print(row(['  (undefined): ',
-            ', '.join(sorted(result[ch]['undefined']))]))
-    print(enddiv())
+def printrange(start, end):
+    for ch in range(start, end):
+        print(title('%02x' % ch))
+        char = bytes([ch])
+        result[ch] = defaultdict(list)
+        for enc in codecs:
+            try:
+                code = char.decode(enc)
+                result[ch][code].append(enc)
+            except UnicodeDecodeError as err:
+                if 'character maps to <undefined>' in str(err):
+                    result[ch]['undefined'].append(enc)
+                else:
+                    raise
+        for glyph in sorted(result[ch].keys()):
+            if glyph == 'undefined':
+                continue
+            print(row(['  %s%s (%s): ' % (glyph, u'\u200e', rep(glyph)),
+                ', '.join(sorted(result[ch][glyph]))]))
+        if 'undefined' in result[ch]:
+            print(row(['  (undefined): ',
+                ', '.join(sorted(result[ch]['undefined']))]))
+        print(enddiv())
+
+printrange(0, 32)
+
+if options.html:
+    print('<hr>')
+else:
+    print("-" * 72)
+
+printrange(128, 256)
+
 if options.html:
     print(done())
