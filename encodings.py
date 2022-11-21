@@ -34,8 +34,12 @@ class Formatter:
         if message is not None:
             print(message)
 
-    def header(self):
-        return None
+    def header(self, codeclist):
+        encodings = ', '.join(codeclist)
+        if self.wrapper is not None:
+            return self.wrapper(['Supported encodings:', encodings])
+        else:
+            return 'Supported encodings: %s' % encodings
 
     def item(self, char):
         return '0x%s' % char
@@ -61,11 +65,14 @@ class Formatter:
 
 
 class HtmlFormatter(Formatter):
-    def header(self):
-        # Simulate uname(1) -a output        
+    def header(self, codeclist):
+        encodings = ', '.join(codeclist)
+
+        # Simulate uname(1) -a output
         sysinfo = ' '.join(
             [getattr(u, attr) for u in (uname(),)
              for attr in ['system', 'node', 'release', 'version', 'machine']])
+
         return('''<!DOCTYPE html>
 <html lang="en" class="">
   <head>
@@ -90,8 +97,9 @@ class HtmlFormatter(Formatter):
       or bookmark an individual character code.</p>
       <p>This page was generated on %s by Python %s<br/>
       <tt>%s</tt>.</p>
+      <p><table><tr><th>Supported encodings:</th><td>%s</td></tr></table></p>
       <hr>
-''' % (strftime('%c'), python_version(), sysinfo))
+''' % (strftime('%c'), python_version(), sysinfo, encodings))
 
     def item(self, char):
         # Keep <a name="0xFF"> as a synonym for legacy links in this syntax
@@ -150,7 +158,7 @@ def get_encodings():
     found=set(name for im, name, ispkg in iter_modules(encodings.__path__))
     exclude = exclude.union(set(encodings.aliases.aliases.keys()))
     found.difference_update(exclude)
-    return found
+    return sorted(found)
 
 
 def wraplines (lines):
@@ -187,7 +195,7 @@ formatter = HtmlFormatter() if options.html else Formatter(
     wrapper=wraplines if options.wrap else None)
 codecs = get_encodings()
 
-formatter.emit(formatter.header())
+formatter.emit(formatter.header(codecs))
 printrange(0, 32, codecs)
 formatter.emit(formatter.endsection())
 printrange(128, 256, codecs)
