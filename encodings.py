@@ -196,7 +196,10 @@ def get_encodings():
     found=set(name for im, name, ispkg in iter_modules(encodings.__path__))
     exclude = exclude.union(set(encodings.aliases.aliases.keys()))
     found.difference_update(exclude)
-    return sorted(found)
+    # Sort by padded numeric suffix, so that 13 comes before 110 and after 2 etc
+    return sorted(
+        found, key=lambda x: re.sub(
+            r'(?<=\D)(\d+)$', lambda y: "%04i" % int(y.group(1)), x))
 
 
 def wraplines (lines):
