@@ -8,6 +8,7 @@ from textwrap import TextWrapper
 from optparse import OptionParser
 from platform import python_version, uname
 from time import strftime
+import re
 
 
 ######## XXX FIXME: replace with argparse
@@ -66,7 +67,7 @@ class Formatter:
 
 class HtmlFormatter(Formatter):
     def header(self, codeclist):
-        encodings = ', '.join(codeclist)
+        encodings = self.encodingtable(codeclist)
 
         # Simulate uname(1) -a output
         sysinfo = ' '.join(
@@ -97,9 +98,46 @@ class HtmlFormatter(Formatter):
       or bookmark an individual character code.</p>
       <p>This page was generated on %s by Python %s<br/>
       <tt>%s</tt>.</p>
-      <p><table><tr><th>Supported encodings:</th><td>%s</td></tr></table></p>
+      <p><table><tr><th>Supported encodings:</th><td>\n%s</td></tr></table></p>
       <hr>
 ''' % (strftime('%c'), python_version(), sysinfo, encodings))
+
+    def encodingtable(self, encodings):
+        # map regular expression to Wikipedia link
+        template = {
+            r'^cp037$': 'Code_page_37',
+            r'^cp(273|500|1140)$': r'Code_page_37#\1',
+            r'^cp(437|7\d{2}|8(?!7[45])\d{2}|1006)$': r'Code_page_\1',
+            r'^cp(125\d)$': r'Windows-\1',
+            r'^iso8859_(\d{1,2})$': r'ISO/IEC_8859-\1',
+            r'^hp_roman8': r'HP_Roman#Roman-8',
+            r'^koi8_([ru])$': r'KOI8->>\1',
+            r'^kz1048$': 'Windows-1251#Kazakh_variant',
+            r'^latin_1': 'ISO/IEC_8859-1',
+            r'^mac_(armenian|roman)$': r'Mac_OS_>>\1',
+            r'^mac_(arabic|farsi|greek)$': r'Mac>>\1_encoding',
+            r'^mac_centeuro$': 'Mac_OS_Central_European_encoding',
+            r'^mac_(croatian|cyrillic|romanian|turkish)$':
+                r'Mac_OS_>>\1_encoding',
+            r'^mac_iceland$': 'Mac_OS_Icelandic_encoding',
+            r'^mac_latin2$': 'Macintosh_Latin_encoding',
+            r'^palmos$': 'Windows-1252#Palm_OS_variant',
+            r'tis_620$': 'Thai_Industrial_Standard_620-2533'
+            }
+        result = []
+        for enc in encodings:
+            for pat, sub in template.items():
+                if re.match(pat, enc):
+                    replacement = re.sub(pat, sub, enc)
+                    replacement = re.sub(
+                        r'>>(.)', lambda x: x.group(1).upper(), replacement)
+                    result.append(
+                        '<a href="https://en.wikipedia.org/wiki/%s">%s</a>' % (
+                            replacement, enc))
+                    break
+            else:
+                result.append(enc)
+        return ',\n'.join(result)
 
     def item(self, char):
         # Keep <a name="0xFF"> as a synonym for legacy links in this syntax
@@ -181,7 +219,7 @@ def get_mappings(ch, codecs):
             else:
                 raise
     for glyph in sorted(result[ch].keys()):
-        yield glyph, sorted(result[ch][glyph])
+        yield glyph, result[ch][glyph]
 
 def printrange(start, end, codecs):
     for ch in range(start, end):
