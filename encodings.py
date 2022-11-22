@@ -94,8 +94,9 @@ class HtmlFormatter(Formatter):
       and contains a map of the character codes 0x00-0x31 and 0x80-0xFF
       in the various 8-bit encodings known by the Python version
       which generated this page.</p>
-      <p>Section headlines are clickable links so you can link to
-      or bookmark an individual character code.</p>
+      <p>Section headlines like <a href="#0x80">0x80</a>
+      are clickable links so you can link to or bookmark
+      an individual character code.</p>
       <p>This page was generated on %s by Python %s<br/>
       <tt>%s</tt>.</p>
       <p><table><tr><th>Supported encodings:</th><td>\n%s</td></tr></table></p>
