@@ -45,11 +45,11 @@ class Formatter:
     def item(self, char):
         return '0x%s' % char
 
-    def row(self, char, encodings):
+    def row(self, char, code, encodings):
         if char == UNDEFINED:
             header = '(undefined)'
         else:
-            header = '  %s (U+%04x): ' % (char, ord(char))
+            header = '  %s (U+%04x): ' % (char, code)
         if self.wrapper is not None:
             return self.wrapper([header, encodings])
         else:
@@ -146,12 +146,12 @@ class HtmlFormatter(Formatter):
             '<a href="#%s">0x%s</a>' \
             '</h3>\n<p><table>' % (char, char, char, char)
 
-    def row(self, char, encodings):
+    def row(self, char, code, encodings):
         if char == UNDEFINED:
             header = '</th><th>(undefined)'
         else:
-            # hack
-            header = '&#%i;</th><th>(%s)' % (ord(char), self.rep(ord(char)))
+            header = '&#%i;</th><th>(%s)' % (
+                code + 0x2400 if code <= 32 else code, self.rep(code))
         return '<tr><th>&zwnj;</th><th>%s</th><td>%s</td>' % (
             header, encodings)
 
@@ -228,7 +228,9 @@ def printrange(start, end, codecs):
     for ch in range(start, end):
         formatter.emit(formatter.item('%02x' % ch))
         for glyph, encodings in get_mappings(ch, codecs):
-            formatter.emit(formatter.row(glyph, ', '.join(encodings)))
+            formatter.emit(formatter.row(
+                glyph, None if glyph == UNDEFINED else ord(glyph),
+                ', '.join(encodings)))
         formatter.emit(formatter.enditem())
 
 
