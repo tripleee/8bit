@@ -112,7 +112,7 @@ class HtmlFormatter(Formatter):
             r'^cp(125\d)$': r'Windows-\1',
             r'^iso8859_(\d{1,2})$': r'ISO/IEC_8859-\1',
             r'^hp_roman8': r'HP_Roman#Roman-8',
-            r'^koi8_([ru])$': r'KOI8->>\1',
+            r'^koi8_([rtu])$': r'KOI8->>\1',
             r'^kz1048$': 'Windows-1251#Kazakh_variant',
             r'^latin_1': 'ISO/IEC_8859-1',
             r'^mac_(armenian|roman)$': r'Mac_OS_>>\1',
