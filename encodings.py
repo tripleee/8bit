@@ -117,7 +117,7 @@ class HtmlFormatter(Formatter):
             r'^latin_1': 'ISO/IEC_8859-1',
             r'^mac_(armenian|roman)$': r'Mac_OS_>>\1',
             r'^mac_(arabic|farsi|greek)$': r'Mac>>\1_encoding',
-            r'^mac_centeuro$': 'Mac_OS_Central_European_encoding',
+            r'^mac_latin2$': 'Mac_OS_Central_European_encoding',
             r'^mac_(croatian|cyrillic|romanian|turkish)$':
                 r'Mac_OS_>>\1_encoding',
             r'^mac_iceland$': 'Mac_OS_Icelandic_encoding',
