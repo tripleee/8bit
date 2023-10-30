@@ -121,7 +121,7 @@ class HtmlFormatter(Formatter):
             r'^mac_(croatian|cyrillic|romanian|turkish)$':
                 r'Mac_OS_>>\1_encoding',
             r'^mac_iceland$': 'Mac_OS_Icelandic_encoding',
-            r'^mac_latin2$': 'Macintosh_Latin_encoding',
+            # r'^mac_latin2$': 'Macintosh_Latin_encoding',
             r'^palmos$': 'Windows-1252#Palm_OS_variant',
             r'tis_620$': 'Thai_Industrial_Standard_620-2533'
             }
