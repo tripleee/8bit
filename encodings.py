@@ -5,7 +5,6 @@ import encodings
 from pkgutil import iter_modules
 from collections import defaultdict
 from textwrap import TextWrapper
-from optparse import OptionParser
 from platform import python_version, uname
 from time import strftime
 import re
@@ -231,27 +230,60 @@ def printrange(start, end, codecs):
 
 
 def table(formatter):
+    """
+    Render a table of all the character codes we support using the
+    provided formatter.
+    """
     formatter.emit(formatter.header(codecs))
     printrange(0, 32, codecs)
     formatter.emit(formatter.endsection())
     printrange(128, 256, codecs)
     formatter.emit(formatter.footer())
-    
+
+
+def renderings(codecs, string):
+    """
+    Print a string in all the encodings which can interpret it.
+    """
+    seen = defaultdict(list)
+    for codec in codecs:
+        try:
+            seen[string.encode(codec)].append(codec)
+        except UnicodeEncodeError:
+            pass
+    for result, codecs in seen.items():
+        print(f"{repr(result)[1:]}: {codecs}")
+    try:
+        u = string.encode('latin-1').decode('utf-8')
+        if u not in seen:
+            print(f"{repr(u)}: ['utf-8']")
+    except UnicodeEncodeError:
+        pass
+
 
 if __name__ == "__main__":
-    ######## XXX FIXME: replace with argparse
-    parser = OptionParser()
-    parser.add_option('-w', '--wrap', dest='wrap', action='store_true',
-        help='Wrap output for limited column width')
-    parser.add_option('-H', '--html', dest='html', action='store_true',
-        help='Generate HTML output')
-    (options, args) = parser.parse_args()
+    from argparse import ArgumentParser, REMAINDER
 
-    if options.wrap and options.html:
-        raise KeyError('Cannot specify --wrap and --html at the same time')
+    parser = ArgumentParser(
+        prog='8bit',
+        description='8-bit character encoding mapping and information')
+    parser.add_argument('-t', '--table', dest='table', choices=['html', 'text'],
+        help='Generate tabular output (specify "html" or text)')
+    parser.add_argument('-w', '--wrap', dest='wrap', action='store_true',
+        help='Wrap text table output for limited column width')
+    parser.add_argument('strings', metavar='s', nargs=REMAINDER,
+        help='Strings to map to various encodings')
+    args = parser.parse_args()
 
     codecs = get_encodings()
 
-    formatter = HtmlFormatter() if options.html else Formatter(
-        wrapper=wraplines if options.wrap else None)
-    table(formatter)
+    if args.table:
+        if args.wrap and args.table == 'html':
+            raise ValueError('Cannot specify --wrap with --table html')
+
+        formatter = HtmlFormatter() if args.table == 'html' \
+            else Formatter(wrapper=wraplines if args.wrap else None)
+        table(formatter)
+
+    else:
+        renderings(codecs, ' '.join(args.strings))
