@@ -11,18 +11,6 @@ from time import strftime
 import re
 
 
-######## XXX FIXME: replace with argparse
-parser = OptionParser()
-parser.add_option('-w', '--wrap', dest='wrap', action='store_true',
-    help='Wrap output for limited column width')
-parser.add_option('-H', '--html', dest='html', action='store_true',
-    help='Generate HTML output')
-(options, args) = parser.parse_args()
-
-
-if options.wrap and options.html:
-    raise KeyError('Cannot specify --wrap and --html at the same time')
-
 # Force undefined to sort last
 UNDEFINED = '\U0001fffffundefined'
 
@@ -88,17 +76,21 @@ class HtmlFormatter(Formatter):
   </head>
   <body>
      <h1>Table of Legacy 8-bit Encodings</h1>
+
       <p>This table was generated from
       <a href="https://github.com/tripleee/8bit/">
         https://github.com/tripleee/8bit/</a>
       and contains a map of the character codes 0x00-0x31 and 0x80-0xFF
       in the various 8-bit encodings known by the Python version
       which generated this page.</p>
+
       <p>Section headlines like <a href="#0x80">0x80</a>
       are clickable links so you can link to or bookmark
       an individual character code.</p>
+
       <p>This page was generated on %s by Python %s<br/>
       <tt>%s</tt>.</p>
+
       <p><table><tr><th>Supported encodings:</th><td>\n%s</td></tr></table></p>
       <hr>
 ''' % (strftime('%c'), python_version(), sysinfo, encodings))
@@ -195,7 +187,7 @@ def get_encodings():
         'shift_jis', 'shift_jis_2004', 'shift_jisx0213', 'cp932',
         # Korean
         'euc_kr', 'iso2022_kr', 'johab', 'cp949'])
-    
+
     found=set(name for im, name, ispkg in iter_modules(encodings.__path__))
     exclude = exclude.union(set(encodings.aliases.aliases.keys()))
     found.difference_update(exclude)
@@ -227,6 +219,7 @@ def get_mappings(ch, codecs):
     for glyph in sorted(result[ch].keys()):
         yield glyph, result[ch][glyph]
 
+
 def printrange(start, end, codecs):
     for ch in range(start, end):
         formatter.emit(formatter.item('%02x' % ch))
@@ -237,12 +230,24 @@ def printrange(start, end, codecs):
         formatter.emit(formatter.enditem())
 
 
-formatter = HtmlFormatter() if options.html else Formatter(
-    wrapper=wraplines if options.wrap else None)
-codecs = get_encodings()
+if __name__ == "__main__":
+    ######## XXX FIXME: replace with argparse
+    parser = OptionParser()
+    parser.add_option('-w', '--wrap', dest='wrap', action='store_true',
+        help='Wrap output for limited column width')
+    parser.add_option('-H', '--html', dest='html', action='store_true',
+        help='Generate HTML output')
+    (options, args) = parser.parse_args()
 
-formatter.emit(formatter.header(codecs))
-printrange(0, 32, codecs)
-formatter.emit(formatter.endsection())
-printrange(128, 256, codecs)
-formatter.emit(formatter.footer())
+    if options.wrap and options.html:
+        raise KeyError('Cannot specify --wrap and --html at the same time')
+
+    formatter = HtmlFormatter() if options.html else Formatter(
+        wrapper=wraplines if options.wrap else None)
+    codecs = get_encodings()
+
+    formatter.emit(formatter.header(codecs))
+    printrange(0, 32, codecs)
+    formatter.emit(formatter.endsection())
+    printrange(128, 256, codecs)
+    formatter.emit(formatter.footer())
