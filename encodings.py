@@ -53,7 +53,7 @@ class Formatter:
         if self.wrapper is not None:
             return self.wrapper([header, encodings])
         else:
-            return '%s: %s' % (header, encodings)
+            return '%s%s' % (header, encodings)
 
     def enditem(self):
         return None
