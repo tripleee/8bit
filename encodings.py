@@ -230,6 +230,14 @@ def printrange(start, end, codecs):
         formatter.emit(formatter.enditem())
 
 
+def table(formatter):
+    formatter.emit(formatter.header(codecs))
+    printrange(0, 32, codecs)
+    formatter.emit(formatter.endsection())
+    printrange(128, 256, codecs)
+    formatter.emit(formatter.footer())
+    
+
 if __name__ == "__main__":
     ######## XXX FIXME: replace with argparse
     parser = OptionParser()
@@ -242,12 +250,8 @@ if __name__ == "__main__":
     if options.wrap and options.html:
         raise KeyError('Cannot specify --wrap and --html at the same time')
 
-    formatter = HtmlFormatter() if options.html else Formatter(
-        wrapper=wraplines if options.wrap else None)
     codecs = get_encodings()
 
-    formatter.emit(formatter.header(codecs))
-    printrange(0, 32, codecs)
-    formatter.emit(formatter.endsection())
-    printrange(128, 256, codecs)
-    formatter.emit(formatter.footer())
+    formatter = HtmlFormatter() if options.html else Formatter(
+        wrapper=wraplines if options.wrap else None)
+    table(formatter)
