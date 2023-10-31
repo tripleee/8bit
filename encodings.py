@@ -152,6 +152,8 @@ class HtmlFormatter(Formatter):
             header = '</th><th>(undefined)'
         else:
             header = '&#%i;</th><th>(%s)' % (
+                0x2420 if code == 0x20 else
+                0x2421 if code == 0x7f else
                 code + 0x2400 if code <= 32 else code, self.rep(code))
         return '<tr><th>&zwnj;</th><th>%s</th><td>%s</td>' % (
             header, encodings)
