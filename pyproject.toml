@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "8bit"
+version = "0.8.0"
+description = "Table of legacy 8-bit encodings, and command-line decoding tool"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [{name = "tripleee"}]
+
+[project.urls]
+Homepage = "https://github.com/tripleee/8bit"
+
+[tool.setuptools]
+py-modules = ["encodings"]
+
+[project.scripts]
+8bit = "encodings:main"
