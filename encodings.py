@@ -23,24 +23,24 @@ class Formatter:
             print(message)
 
     def header(self, codeclist):
-        encodings = ', '.join(codeclist)
+        encs = ', '.join(codeclist)
         if self.wrapper is not None:
-            return self.wrapper(['Supported encodings:', encodings])
+            return self.wrapper(['Supported encodings:', encs])
         else:
-            return 'Supported encodings: %s' % encodings
+            return 'Supported encodings: %s' % encs
 
     def item(self, char):
         return '0x%s' % char
 
-    def row(self, char, code, encodings):
+    def row(self, char, code, encs):
         if char == UNDEFINED:
             header = '(undefined)'
         else:
             header = '  %s (U+%04x): ' % (char, code)
         if self.wrapper is not None:
-            return self.wrapper([header, encodings])
+            return self.wrapper([header, encs])
         else:
-            return '%s%s' % (header, encodings)
+            return '%s%s' % (header, encs)
 
     def enditem(self):
         return None
@@ -54,7 +54,7 @@ class Formatter:
 
 class HtmlFormatter(Formatter):
     def header(self, codeclist):
-        encodings = self.encodingtable(codeclist)
+        encs = self.encodingtable(codeclist)
 
         # Simulate uname(1) -a output
         sysinfo = ' '.join(
@@ -92,9 +92,9 @@ class HtmlFormatter(Formatter):
 
       <p><table><tr><th>Supported encodings:</th><td>\n%s</td></tr></table></p>
       <hr>
-''' % (strftime('%c'), python_version(), sysinfo, encodings))
+''' % (strftime('%c'), python_version(), sysinfo, encs))
 
-    def encodingtable(self, encodings):
+    def encodingtable(self, encs):
         # map regular expression to Wikipedia link
         template = {
             r'^cp037$': 'Code_page_37',
@@ -117,7 +117,7 @@ class HtmlFormatter(Formatter):
             r'tis_620$': 'Thai_Industrial_Standard_620-2533'
             }
         result = []
-        for enc in encodings:
+        for enc in encs:
             for pat, sub in template.items():
                 if re.match(pat, enc):
                     replacement = re.sub(pat, sub, enc)
@@ -138,7 +138,7 @@ class HtmlFormatter(Formatter):
             '<a href="#%s">0x%s</a>' \
             '</h3>\n<p><table>' % (char, char, char, char)
 
-    def row(self, char, code, encodings):
+    def row(self, char, code, encs):
         if char == UNDEFINED:
             header = '</th><th>(undefined)'
         else:
@@ -147,7 +147,7 @@ class HtmlFormatter(Formatter):
                 0x2421 if code == 0x7f else
                 code + 0x2400 if code <= 32 else code, self.rep(code))
         return '<tr><th>&zwnj;</th><th>%s</th><td>%s</td>' % (
-            header, encodings)
+            header, encs)
 
     def enditem(self):
         return '</table></p>'
@@ -222,10 +222,10 @@ def get_mappings(ch, codecs):
 def printrange(start, end, codecs):
     for ch in range(start, end):
         formatter.emit(formatter.item('%02x' % ch))
-        for glyph, encodings in get_mappings(ch, codecs):
+        for glyph, encs in get_mappings(ch, codecs):
             formatter.emit(formatter.row(
                 glyph, None if glyph == UNDEFINED else ord(glyph),
-                ', '.join(encodings)))
+                ', '.join(encs)))
         formatter.emit(formatter.enditem())
 
 
