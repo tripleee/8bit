@@ -172,6 +172,8 @@ def get_encodings():
         'quopri_codec', 'raw_unicode_escape', 'unicode_escape', 'base64_codec',
         'zlib_codec', 'charmap', 'ascii', 'string_escape', 'rot_13',
         'undefined', 'idna', 'oem',
+        # Wacky Windows special case in 3.14
+        '_win_cp_codecs',
         # Exclude multi-byte encodings: UTF-xx
         'mbcs', 'utf_7', 'utf_8', 'utf_8_sig',
         'utf_16', 'utf_16_be', 'utf_16_le',
