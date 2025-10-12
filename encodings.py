@@ -113,7 +113,7 @@ class HtmlFormatter(Formatter):
                 r'Mac_OS_>>\1_encoding',
             r'^mac_iceland$': 'Mac_OS_Icelandic_encoding',
             # r'^mac_latin2$': 'Macintosh_Latin_encoding',
-            r'^palmos$': 'Windows-1252#Palm_OS_variant',
+            r'^palmos$': 'https://dflund.se/~triad/krad/recode/palm.html',
             r'tis_620$': 'Thai_Industrial_Standard_620-2533'
             }
         result = []
@@ -121,11 +121,14 @@ class HtmlFormatter(Formatter):
             for pat, sub in template.items():
                 if re.match(pat, enc):
                     replacement = re.sub(pat, sub, enc)
-                    replacement = re.sub(
-                        r'>>(.)', lambda x: x.group(1).upper(), replacement)
-                    result.append(
-                        '<a href="https://en.wikipedia.org/wiki/%s">%s</a>' % (
-                            replacement, enc))
+                    if sub.startswith("https://"):
+                        result.append(f'<a href="{replacement}">{enc}</a>')
+                    else:
+                        replacement = re.sub(
+                            r'>>(.)', lambda x: x.group(1).upper(), replacement)
+                        result.append(
+                            '<a href="https://en.wikipedia.org/wiki/'
+                            f'{replacement}">{enc}</a>')
                     break
             else:
                 result.append(enc)
@@ -287,5 +290,7 @@ if __name__ == "__main__":
             else Formatter(wrapper=wraplines if args.wrap else None)
         table(formatter)
 
-    else:
+    elif args.strings:
         renderings(codecs, ' '.join(args.strings))
+    else:
+        renderings(codecs, '')
