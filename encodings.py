@@ -53,6 +53,9 @@ class Formatter:
 
 
 class HtmlFormatter(Formatter):
+    def __init__(self, with_fork_me=False):
+        self.fork_me = with_fork_me
+
     def header(self, codeclist):
         encs = self.encodingtable(codeclist)
 
@@ -73,7 +76,21 @@ class HtmlFormatter(Formatter):
       td { vertical-align: text-top; }
     </style>
   </head>
-  <body>
+  <body>''' +
+  ('''\
+  <a href="https://github.com/tripleee/8bit"
+  style="position: absolute; top: 0; right: 0; border: 0;">
+  <svg width="100" height="100" viewBox="0 0 100 100">
+    <polygon fill="#151513" fill-opacity="0.5" points="0,0 100,0 100,100" />
+    <g>
+      <text x="50" y="70" fill="#fff" font-size="11" font-family="Arial"
+            text-anchor="middle" transform="rotate(45 74,74)">
+        Fork me on Github
+      </text>
+    </g>
+  </svg>
+  </a>''' if self.fork_me else '') +
+  '''\
      <h1>Table of Legacy 8-bit Encodings</h1>
 
       <p>This table was generated from
@@ -272,7 +289,9 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         prog='8bit',
         description='8-bit character encoding mapping and information')
-    parser.add_argument('-t', '--table', dest='table', choices=['html', 'text'],
+    parser.add_argument(
+        '-t', '--table', dest='table',
+        choices=['html', 'html-with-fork-me', 'text'],
         help='Generate tabular output (specify "html" or text)')
     parser.add_argument('-w', '--wrap', dest='wrap', action='store_true',
         help='Wrap text table output for limited column width')
@@ -283,14 +302,20 @@ if __name__ == "__main__":
     codecs = get_encodings()
 
     if args.table:
-        if args.wrap and args.table == 'html':
+        if args.wrap and args.table in ('html', 'html-with-fork-me'):
             raise ValueError('Cannot specify --wrap with --table html')
 
-        formatter = HtmlFormatter() if args.table == 'html' \
-            else Formatter(wrapper=wraplines if args.wrap else None)
+        formatter = HtmlFormatter(
+            with_fork_me=args.table == 'html-with-fork-me'
+        ) if args.table in ('html', 'html-with-fork-me') else Formatter(
+                wrapper=wraplines if args.wrap else None)
         table(formatter)
 
     elif args.strings:
         renderings(codecs, ' '.join(args.strings))
     else:
         renderings(codecs, '')
+
+        ######## TODO: with no options, print usage message
+        ######## TODO: -- end of options
+        ######## TODO: --list-refs tab-separated list of encodings with references

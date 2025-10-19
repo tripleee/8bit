@@ -24,6 +24,6 @@ jobs:
           git config --local user.name "$(git log --format='%an' HEAD^!)"
           git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
           git pull github ${GITHUB_REF} --ff-only
-          python3 ./encodings.py --table html >index.html
+          python3 ./encodings.py --table html-with-fork-me >index.html
           git commit -m "Committed from Github Actions" index.html
           git push github HEAD:${GITHUB_REF}
