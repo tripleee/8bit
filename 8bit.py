@@ -241,7 +241,7 @@ def get_mappings(ch, codecs):
         yield glyph, result[ch][glyph]
 
 
-def printrange(start, end, codecs):
+def printrange(start, end, codecs, formatter):
     for ch in range(start, end):
         formatter.emit(formatter.item('%02x' % ch))
         for glyph, encs in get_mappings(ch, codecs):
@@ -251,15 +251,15 @@ def printrange(start, end, codecs):
         formatter.emit(formatter.enditem())
 
 
-def table(formatter):
+def table(formatter, codecs):
     """
     Render a table of all the character codes we support using the
     provided formatter.
     """
     formatter.emit(formatter.header(codecs))
-    printrange(0, 32, codecs)
+    printrange(0, 32, codecs, formatter)
     formatter.emit(formatter.endsection())
-    printrange(128, 256, codecs)
+    printrange(128, 256, codecs, formatter)
     formatter.emit(formatter.footer())
 
 
@@ -279,11 +279,11 @@ def renderings(codecs, string):
         u = string.encode('latin-1').decode('utf-8')
         if u not in seen:
             print(f"{repr(u)}: ['utf-8']")
-    except UnicodeEncodeError:
+    except (UnicodeEncodeError, UnicodeDecodeError):
         pass
 
 
-if __name__ == "__main__":
+def main():
     from argparse import ArgumentParser, REMAINDER
 
     parser = ArgumentParser(
@@ -293,7 +293,8 @@ if __name__ == "__main__":
         '-t', '--table', dest='table',
         choices=['html', 'html-with-fork-me', 'text'],
         help='Generate tabular output (specify "html" or text)')
-    parser.add_argument('-w', '--wrap', dest='wrap', action='store_true',
+    parser.add_argument(
+        '-w', '--wrap', dest='wrap', action='store_true',
         help='Wrap text table output for limited column width')
     parser.add_argument('strings', metavar='s', nargs=REMAINDER,
         help='Strings to map to various encodings')
@@ -309,7 +310,7 @@ if __name__ == "__main__":
             with_fork_me=args.table == 'html-with-fork-me'
         ) if args.table in ('html', 'html-with-fork-me') else Formatter(
                 wrapper=wraplines if args.wrap else None)
-        table(formatter)
+        table(formatter, codecs)
 
     elif args.strings:
         renderings(codecs, ' '.join(args.strings))
@@ -318,4 +319,8 @@ if __name__ == "__main__":
 
         ######## TODO: with no options, print usage message
         ######## TODO: -- end of options
-        ######## TODO: --list-refs tab-separated list of encodings with references
+        ######## TODO: --list-refs tab-separated list
+
+
+if __name__ == "__main__":
+    main()

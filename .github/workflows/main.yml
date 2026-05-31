@@ -18,12 +18,17 @@ jobs:
         with:
           python-version: '3.14'
 
+      - name: Run tests
+        run: |
+          python3 -m pip install pytest
+          python3 -m pytest tests/
+
       - name: Update index.html and push to repo
         run: |
           git config --local user.email "$(git log --format='%ae' HEAD^!)"
           git config --local user.name "$(git log --format='%an' HEAD^!)"
           git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
           git pull github ${GITHUB_REF} --ff-only
-          python3 ./encodings.py --table html-with-fork-me >index.html
+          python3 ./8bit.py --table html-with-fork-me >index.html
           git commit -m "Committed from Github Actions" index.html
           git push github HEAD:${GITHUB_REF}
