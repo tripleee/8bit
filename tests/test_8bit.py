@@ -1,4 +1,5 @@
 import importlib
+import re
 import sys
 import pytest
 
@@ -180,4 +181,92 @@ class TestMain:
         monkeypatch.setattr(
             sys, 'argv', ['8bit', '--table', 'html', '--wrap'])
         with pytest.raises(ValueError):
+            bit.main()
+
+
+class TestReadmeConsistency:
+    """
+    Verify the README example and documented behaviour
+    stay consistent with the code.
+
+    The README shows: 8bit ï»¿
+    ï»¿ = U+00EF U+00BB U+00BF; its latin-1 encoding
+    b'\\xef\\xbb\\xbf' is valid UTF-8 for U+FEFF (BOM).
+    """
+
+    # The "mystery string" from the README example
+    BOM_STRING = 'ï»¿'
+
+    def _renderings_lines(self, capsys):
+        encs = bit.get_encodings()
+        bit.renderings(encs, self.BOM_STRING)
+        return capsys.readouterr().out.strip().splitlines()
+
+    def test_output_format_is_repr_colon_list(self, capsys):
+        """Each output line must look like '<bytes>': [<codecs>]"""
+        for line in self._renderings_lines(capsys):
+            assert re.match(r"^'.*': \[.+\]$", line), (
+                f"Unexpected format: {line!r}")
+
+    def test_utf8_bom_shown_on_last_line(self, capsys):
+        """README last line: '\\ufeff': ['utf-8']"""
+        lines = self._renderings_lines(capsys)
+        last = lines[-1]
+        assert "\\ufeff" in last
+        assert "utf-8" in last
+
+    def test_latin1_group_present(self, capsys):
+        """README shows latin_1 in the \\xef\\xbb\\xbf group"""
+        out = '\n'.join(self._renderings_lines(capsys))
+        assert 'latin_1' in out
+
+    def test_ebcdic_group_present(self, capsys):
+        """README shows cp037 in the EBCDIC group"""
+        out = '\n'.join(self._renderings_lines(capsys))
+        assert 'cp037' in out
+
+    def test_html_has_clickable_section_anchors(self, capsys):
+        """
+        README: section headlines like 0x80 are clickable links.
+        Items use bare-hex hrefs (#80) but carry both
+        <a name="80"> and <a name="0x80"> for legacy links.
+        The header description also references #0x80.
+        """
+        bit.table(bit.HtmlFormatter(), ['latin_1'])
+        out = capsys.readouterr().out
+        # Header description uses the 0x-prefixed form as an example
+        assert '<a href="#0x80">0x80</a>' in out
+        # Item section links use bare hex
+        assert '<a href="#80">' in out
+        # Legacy anchor form is present on every item
+        assert '<a name="0x80">' in out
+
+    def test_table_html_fork_me(self, capsys, monkeypatch):
+        """html-with-fork-me adds the Fork Me banner"""
+        monkeypatch.setattr(
+            sys, 'argv', ['8bit', '--table', 'html-with-fork-me'])
+        bit.main()
+        out = capsys.readouterr().out
+        assert '<!DOCTYPE html>' in out
+        assert 'Fork me' in out
+
+    def test_table_text_accepted(self, capsys, monkeypatch):
+        """--table text is a documented choice"""
+        monkeypatch.setattr(
+            sys, 'argv', ['8bit', '--table', 'text'])
+        bit.main()
+        assert '0x80' in capsys.readouterr().out
+
+    def test_wrap_accepted_with_text(self, capsys, monkeypatch):
+        """--wrap is accepted alongside --table text"""
+        monkeypatch.setattr(
+            sys, 'argv', ['8bit', '--table', 'text', '--wrap'])
+        bit.main()
+        assert '0x80' in capsys.readouterr().out
+
+    def test_undocumented_table_choice_rejected(self, monkeypatch):
+        """--table rejects choices not in the documented set"""
+        monkeypatch.setattr(
+            sys, 'argv', ['8bit', '--table', 'pdf'])
+        with pytest.raises(SystemExit):
             bit.main()
