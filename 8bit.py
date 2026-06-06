@@ -114,9 +114,14 @@ class HtmlFormatter(Formatter):
     def encodingtable(self, encs):
         # map regular expression to Wikipedia link
         template = {
-            r'^cp(037|273|500|1140)$': 'EBCDIC',
-            # Individual articles deleted; link to overview
-            r'^cp(720|775|852|855|856|857|860)$': 'Windows_code_page',
+            r'^cp(037|273|424|500|1140)$': 'EBCDIC',
+            # Individual Wikipedia articles deleted; link to Wikibooks
+            r'^cp(720|775|852|855|856|857|860)$': (
+                r'https://en.wikibooks.org/wiki/'
+                r'Character_Encodings/Code_Tables/'
+                r'MS-DOS/Code_page_\1'
+            ),
+            r'^cp874$': 'ISO/IEC_8859-11',
             r'^cp(437|7\d{2}|8(?!7[45])\d{2}|1006)$': r'Code_page_\1',
             r'^cp(125\d)$': r'Windows-\1',
             r'^iso8859_(\d{1,2})$': r'ISO/IEC_8859-\1',
@@ -125,7 +130,10 @@ class HtmlFormatter(Formatter):
             r'^kz1048$': 'Windows-1251#KZ-1048',
             r'^latin_1': 'ISO/IEC_8859-1',
             r'^mac_(armenian|roman)$': r'Mac_OS_>>\1',
-            # mac_farsi has no Wikipedia article; omit link
+            # mac_farsi links to MacArabic, which covers both;
+            # the Wikipedia MacArabic article should ideally explain
+            # the difference between the two encodings
+            r'^mac_farsi$': 'MacArabic_encoding',
             r'^mac_(arabic|greek)$': r'Mac>>\1_encoding',
             r'^mac_latin2$': 'Mac_OS_Central_European_encoding',
             r'^mac_(croatian|cyrillic|romanian|turkish)$':

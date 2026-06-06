@@ -64,6 +64,11 @@
     "article": "EBCDIC",
     "title": "EBCDIC"
   },
+  "cp424": {
+    "anchor": null,
+    "article": "EBCDIC",
+    "title": "EBCDIC"
+  },
   "cp437": {
     "anchor": null,
     "article": "Code_page_437",
@@ -74,55 +79,20 @@
     "article": "EBCDIC",
     "title": "EBCDIC"
   },
-  "cp720": {
-    "anchor": null,
-    "article": "Windows_code_page",
-    "title": "Windows code page"
-  },
   "cp737": {
     "anchor": null,
     "article": "Code_page_737",
     "title": "Code page 737"
-  },
-  "cp775": {
-    "anchor": null,
-    "article": "Windows_code_page",
-    "title": "Windows code page"
   },
   "cp850": {
     "anchor": null,
     "article": "Code_page_850",
     "title": "Code page 850"
   },
-  "cp852": {
-    "anchor": null,
-    "article": "Windows_code_page",
-    "title": "Windows code page"
-  },
-  "cp855": {
-    "anchor": null,
-    "article": "Windows_code_page",
-    "title": "Windows code page"
-  },
-  "cp856": {
-    "anchor": null,
-    "article": "Windows_code_page",
-    "title": "Windows code page"
-  },
-  "cp857": {
-    "anchor": null,
-    "article": "Windows_code_page",
-    "title": "Windows code page"
-  },
   "cp858": {
     "anchor": null,
     "article": "Code_page_858",
     "title": "Code page 850"
-  },
-  "cp860": {
-    "anchor": null,
-    "article": "Windows_code_page",
-    "title": "Windows code page"
   },
   "cp861": {
     "anchor": null,
@@ -158,6 +128,11 @@
     "anchor": null,
     "article": "Code_page_869",
     "title": "Code page 869"
+  },
+  "cp874": {
+    "anchor": null,
+    "article": "ISO/IEC_8859-11",
+    "title": "ISO/IEC 8859-11"
   },
   "hp_roman8": {
     "anchor": "Roman-8",
@@ -273,6 +248,11 @@
     "anchor": null,
     "article": "Mac_OS_Cyrillic_encoding",
     "title": "Mac OS Cyrillic encoding"
+  },
+  "mac_farsi": {
+    "anchor": null,
+    "article": "MacArabic_encoding",
+    "title": "MacArabic encoding"
   },
   "mac_greek": {
     "anchor": null,
