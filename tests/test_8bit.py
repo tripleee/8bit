@@ -3,7 +3,7 @@ import re
 import sys
 import pytest
 
-bit = importlib.import_module("8bit")
+bit = importlib.import_module("_8bit")
 
 
 class TestGetEncodings:

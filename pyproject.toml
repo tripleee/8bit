@@ -14,10 +14,10 @@ authors = [{name = "tripleee"}]
 Homepage = "https://github.com/tripleee/8bit"
 
 [tool.setuptools]
-py-modules = ["8bit"]
+py-modules = ["_8bit"]
 
 [project.scripts]
-8bit = "8bit:main"
+8bit = "_8bit:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

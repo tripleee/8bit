@@ -31,7 +31,7 @@ from pathlib import Path
 
 import pytest
 
-bit = importlib.import_module("8bit")
+bit = importlib.import_module("_8bit")
 
 SNAPSHOT = Path(__file__).parent / "wikipedia_snapshots.json"
 # action=query for title/existence checks (batch up to 50)
