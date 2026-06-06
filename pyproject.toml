@@ -21,3 +21,6 @@ py-modules = ["8bit"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+markers = [
+    "network: tests requiring internet access (slow)",
+]

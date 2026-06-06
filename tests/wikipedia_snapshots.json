@@ -1,0 +1,254 @@
+{
+  "cp037": {
+    "article": "Code_page_37",
+    "title": null
+  },
+  "cp1006": {
+    "article": "Code_page_1006",
+    "title": "Code page 1006"
+  },
+  "cp1140": {
+    "article": "Code_page_37",
+    "title": null
+  },
+  "cp1250": {
+    "article": "Windows-1250",
+    "title": "Windows-1250"
+  },
+  "cp1251": {
+    "article": "Windows-1251",
+    "title": "Windows-1251"
+  },
+  "cp1252": {
+    "article": "Windows-1252",
+    "title": "Windows-1252"
+  },
+  "cp1253": {
+    "article": "Windows-1253",
+    "title": "Windows-1253"
+  },
+  "cp1254": {
+    "article": "Windows-1254",
+    "title": "Windows-1254"
+  },
+  "cp1255": {
+    "article": "Windows-1255",
+    "title": "Windows-1255"
+  },
+  "cp1256": {
+    "article": "Windows-1256",
+    "title": "Windows-1256"
+  },
+  "cp1257": {
+    "article": "Windows-1257",
+    "title": "Windows-1257"
+  },
+  "cp1258": {
+    "article": "Windows-1258",
+    "title": "Windows-1258"
+  },
+  "cp273": {
+    "article": "Code_page_37",
+    "title": null
+  },
+  "cp437": {
+    "article": "Code_page_437",
+    "title": "Code page 437"
+  },
+  "cp500": {
+    "article": "Code_page_37",
+    "title": null
+  },
+  "cp720": {
+    "article": "Code_page_720",
+    "title": null
+  },
+  "cp737": {
+    "article": "Code_page_737",
+    "title": "Code page 737"
+  },
+  "cp775": {
+    "article": "Code_page_775",
+    "title": null
+  },
+  "cp850": {
+    "article": "Code_page_850",
+    "title": "Code page 850"
+  },
+  "cp852": {
+    "article": "Code_page_852",
+    "title": null
+  },
+  "cp855": {
+    "article": "Code_page_855",
+    "title": null
+  },
+  "cp856": {
+    "article": "Code_page_856",
+    "title": null
+  },
+  "cp857": {
+    "article": "Code_page_857",
+    "title": null
+  },
+  "cp858": {
+    "article": "Code_page_858",
+    "title": "Code page 850"
+  },
+  "cp860": {
+    "article": "Code_page_860",
+    "title": null
+  },
+  "cp861": {
+    "article": "Code_page_861",
+    "title": "Code page 861"
+  },
+  "cp862": {
+    "article": "Code_page_862",
+    "title": "Code page 862"
+  },
+  "cp863": {
+    "article": "Code_page_863",
+    "title": "Code page 863"
+  },
+  "cp864": {
+    "article": "Code_page_864",
+    "title": "Code page 864"
+  },
+  "cp865": {
+    "article": "Code_page_865",
+    "title": "Code page 865"
+  },
+  "cp866": {
+    "article": "Code_page_866",
+    "title": "Code page 866"
+  },
+  "cp869": {
+    "article": "Code_page_869",
+    "title": "Code page 869"
+  },
+  "hp_roman8": {
+    "article": "HP_Roman",
+    "title": "HP Roman"
+  },
+  "iso8859_10": {
+    "article": "ISO/IEC_8859-10",
+    "title": "ISO/IEC 8859-10"
+  },
+  "iso8859_11": {
+    "article": "ISO/IEC_8859-11",
+    "title": "ISO/IEC 8859-11"
+  },
+  "iso8859_13": {
+    "article": "ISO/IEC_8859-13",
+    "title": "ISO/IEC 8859-13"
+  },
+  "iso8859_14": {
+    "article": "ISO/IEC_8859-14",
+    "title": "ISO/IEC 8859-14"
+  },
+  "iso8859_15": {
+    "article": "ISO/IEC_8859-15",
+    "title": "ISO/IEC 8859-15"
+  },
+  "iso8859_16": {
+    "article": "ISO/IEC_8859-16",
+    "title": "ISO/IEC 8859-16"
+  },
+  "iso8859_2": {
+    "article": "ISO/IEC_8859-2",
+    "title": "ISO/IEC 8859-2"
+  },
+  "iso8859_3": {
+    "article": "ISO/IEC_8859-3",
+    "title": "ISO/IEC 8859-3"
+  },
+  "iso8859_4": {
+    "article": "ISO/IEC_8859-4",
+    "title": "ISO/IEC 8859-4"
+  },
+  "iso8859_5": {
+    "article": "ISO/IEC_8859-5",
+    "title": "ISO/IEC 8859-5"
+  },
+  "iso8859_6": {
+    "article": "ISO/IEC_8859-6",
+    "title": "ISO/IEC 8859-6"
+  },
+  "iso8859_7": {
+    "article": "ISO/IEC_8859-7",
+    "title": "ISO/IEC 8859-7"
+  },
+  "iso8859_8": {
+    "article": "ISO/IEC_8859-8",
+    "title": "ISO/IEC 8859-8"
+  },
+  "iso8859_9": {
+    "article": "ISO/IEC_8859-9",
+    "title": "ISO/IEC 8859-9"
+  },
+  "koi8_r": {
+    "article": "KOI8-R",
+    "title": "KOI8-R"
+  },
+  "koi8_t": {
+    "article": "KOI8-T",
+    "title": "KOI8-T"
+  },
+  "koi8_u": {
+    "article": "KOI8-U",
+    "title": "KOI8-U"
+  },
+  "kz1048": {
+    "article": "Windows-1251",
+    "title": "Windows-1251"
+  },
+  "latin_1": {
+    "article": "ISO/IEC_8859-1",
+    "title": "ISO/IEC 8859-1"
+  },
+  "mac_arabic": {
+    "article": "MacArabic_encoding",
+    "title": "MacArabic encoding"
+  },
+  "mac_croatian": {
+    "article": "Mac_OS_Croatian_encoding",
+    "title": "Mac OS Croatian encoding"
+  },
+  "mac_cyrillic": {
+    "article": "Mac_OS_Cyrillic_encoding",
+    "title": "Mac OS Cyrillic encoding"
+  },
+  "mac_farsi": {
+    "article": "MacFarsi_encoding",
+    "title": null
+  },
+  "mac_greek": {
+    "article": "MacGreek_encoding",
+    "title": "Mac OS Greek encoding"
+  },
+  "mac_iceland": {
+    "article": "Mac_OS_Icelandic_encoding",
+    "title": "Mac OS Icelandic encoding"
+  },
+  "mac_latin2": {
+    "article": "Mac_OS_Central_European_encoding",
+    "title": "Mac OS Central European encoding"
+  },
+  "mac_roman": {
+    "article": "Mac_OS_Roman",
+    "title": "Mac OS Roman"
+  },
+  "mac_romanian": {
+    "article": "Mac_OS_Romanian_encoding",
+    "title": "Mac OS Romanian encoding"
+  },
+  "mac_turkish": {
+    "article": "Mac_OS_Turkish_encoding",
+    "title": "Mac OS Turkish encoding"
+  },
+  "tis_620": {
+    "article": "Thai_Industrial_Standard_620-2533",
+    "title": "Thai Industrial Standard 620-2533"
+  }
+}
