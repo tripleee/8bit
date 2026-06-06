@@ -114,7 +114,7 @@ class HtmlFormatter(Formatter):
     def encodingtable(self, encs):
         # map regular expression to Wikipedia link
         template = {
-            r'^cp(037|273|424|500|1140)$': 'EBCDIC',
+            r'^cp(037|273|424|500|875|1026|1140)$': 'EBCDIC',
             # Individual Wikipedia articles deleted; link to Wikibooks
             r'^cp(720|775|852|855|856|857|860)$': (
                 r'https://en.wikibooks.org/wiki/'
@@ -122,6 +122,10 @@ class HtmlFormatter(Formatter):
                 r'MS-DOS/Code_page_\1'
             ),
             r'^cp874$': 'ISO/IEC_8859-11',
+            r'^cp1125$': (
+                'Code_page_866'
+                '#Ukrainian_and_Belarusian_variants'
+            ),
             r'^cp(437|7\d{2}|8(?!7[45])\d{2}|1006)$': r'Code_page_\1',
             r'^cp(125\d)$': r'Windows-\1',
             r'^iso8859_(\d{1,2})$': r'ISO/IEC_8859-\1',

@@ -9,6 +9,16 @@
     "article": "Code_page_1006",
     "title": "Code page 1006"
   },
+  "cp1026": {
+    "anchor": null,
+    "article": "EBCDIC",
+    "title": "EBCDIC"
+  },
+  "cp1125": {
+    "anchor": "Ukrainian_and_Belarusian_variants",
+    "article": "Code_page_866",
+    "title": "Code page 866"
+  },
   "cp1140": {
     "anchor": null,
     "article": "EBCDIC",
@@ -133,6 +143,11 @@
     "anchor": null,
     "article": "ISO/IEC_8859-11",
     "title": "ISO/IEC 8859-11"
+  },
+  "cp875": {
+    "anchor": null,
+    "article": "EBCDIC",
+    "title": "EBCDIC"
   },
   "hp_roman8": {
     "anchor": "Roman-8",
