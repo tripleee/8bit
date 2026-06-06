@@ -1,253 +1,311 @@
 {
   "cp037": {
-    "article": "Code_page_37",
-    "title": null
+    "anchor": null,
+    "article": "EBCDIC",
+    "title": "EBCDIC"
   },
   "cp1006": {
+    "anchor": null,
     "article": "Code_page_1006",
     "title": "Code page 1006"
   },
   "cp1140": {
-    "article": "Code_page_37",
-    "title": null
+    "anchor": null,
+    "article": "EBCDIC",
+    "title": "EBCDIC"
   },
   "cp1250": {
+    "anchor": null,
     "article": "Windows-1250",
     "title": "Windows-1250"
   },
   "cp1251": {
+    "anchor": null,
     "article": "Windows-1251",
     "title": "Windows-1251"
   },
   "cp1252": {
+    "anchor": null,
     "article": "Windows-1252",
     "title": "Windows-1252"
   },
   "cp1253": {
+    "anchor": null,
     "article": "Windows-1253",
     "title": "Windows-1253"
   },
   "cp1254": {
+    "anchor": null,
     "article": "Windows-1254",
     "title": "Windows-1254"
   },
   "cp1255": {
+    "anchor": null,
     "article": "Windows-1255",
     "title": "Windows-1255"
   },
   "cp1256": {
+    "anchor": null,
     "article": "Windows-1256",
     "title": "Windows-1256"
   },
   "cp1257": {
+    "anchor": null,
     "article": "Windows-1257",
     "title": "Windows-1257"
   },
   "cp1258": {
+    "anchor": null,
     "article": "Windows-1258",
     "title": "Windows-1258"
   },
   "cp273": {
-    "article": "Code_page_37",
-    "title": null
+    "anchor": null,
+    "article": "EBCDIC",
+    "title": "EBCDIC"
   },
   "cp437": {
+    "anchor": null,
     "article": "Code_page_437",
     "title": "Code page 437"
   },
   "cp500": {
-    "article": "Code_page_37",
-    "title": null
+    "anchor": null,
+    "article": "EBCDIC",
+    "title": "EBCDIC"
   },
   "cp720": {
-    "article": "Code_page_720",
-    "title": null
+    "anchor": null,
+    "article": "Windows_code_page",
+    "title": "Windows code page"
   },
   "cp737": {
+    "anchor": null,
     "article": "Code_page_737",
     "title": "Code page 737"
   },
   "cp775": {
-    "article": "Code_page_775",
-    "title": null
+    "anchor": null,
+    "article": "Windows_code_page",
+    "title": "Windows code page"
   },
   "cp850": {
+    "anchor": null,
     "article": "Code_page_850",
     "title": "Code page 850"
   },
   "cp852": {
-    "article": "Code_page_852",
-    "title": null
+    "anchor": null,
+    "article": "Windows_code_page",
+    "title": "Windows code page"
   },
   "cp855": {
-    "article": "Code_page_855",
-    "title": null
+    "anchor": null,
+    "article": "Windows_code_page",
+    "title": "Windows code page"
   },
   "cp856": {
-    "article": "Code_page_856",
-    "title": null
+    "anchor": null,
+    "article": "Windows_code_page",
+    "title": "Windows code page"
   },
   "cp857": {
-    "article": "Code_page_857",
-    "title": null
+    "anchor": null,
+    "article": "Windows_code_page",
+    "title": "Windows code page"
   },
   "cp858": {
+    "anchor": null,
     "article": "Code_page_858",
     "title": "Code page 850"
   },
   "cp860": {
-    "article": "Code_page_860",
-    "title": null
+    "anchor": null,
+    "article": "Windows_code_page",
+    "title": "Windows code page"
   },
   "cp861": {
+    "anchor": null,
     "article": "Code_page_861",
     "title": "Code page 861"
   },
   "cp862": {
+    "anchor": null,
     "article": "Code_page_862",
     "title": "Code page 862"
   },
   "cp863": {
+    "anchor": null,
     "article": "Code_page_863",
     "title": "Code page 863"
   },
   "cp864": {
+    "anchor": null,
     "article": "Code_page_864",
     "title": "Code page 864"
   },
   "cp865": {
+    "anchor": null,
     "article": "Code_page_865",
     "title": "Code page 865"
   },
   "cp866": {
+    "anchor": null,
     "article": "Code_page_866",
     "title": "Code page 866"
   },
   "cp869": {
+    "anchor": null,
     "article": "Code_page_869",
     "title": "Code page 869"
   },
   "hp_roman8": {
+    "anchor": "Roman-8",
     "article": "HP_Roman",
     "title": "HP Roman"
   },
   "iso8859_10": {
+    "anchor": null,
     "article": "ISO/IEC_8859-10",
     "title": "ISO/IEC 8859-10"
   },
   "iso8859_11": {
+    "anchor": null,
     "article": "ISO/IEC_8859-11",
     "title": "ISO/IEC 8859-11"
   },
   "iso8859_13": {
+    "anchor": null,
     "article": "ISO/IEC_8859-13",
     "title": "ISO/IEC 8859-13"
   },
   "iso8859_14": {
+    "anchor": null,
     "article": "ISO/IEC_8859-14",
     "title": "ISO/IEC 8859-14"
   },
   "iso8859_15": {
+    "anchor": null,
     "article": "ISO/IEC_8859-15",
     "title": "ISO/IEC 8859-15"
   },
   "iso8859_16": {
+    "anchor": null,
     "article": "ISO/IEC_8859-16",
     "title": "ISO/IEC 8859-16"
   },
   "iso8859_2": {
+    "anchor": null,
     "article": "ISO/IEC_8859-2",
     "title": "ISO/IEC 8859-2"
   },
   "iso8859_3": {
+    "anchor": null,
     "article": "ISO/IEC_8859-3",
     "title": "ISO/IEC 8859-3"
   },
   "iso8859_4": {
+    "anchor": null,
     "article": "ISO/IEC_8859-4",
     "title": "ISO/IEC 8859-4"
   },
   "iso8859_5": {
+    "anchor": null,
     "article": "ISO/IEC_8859-5",
     "title": "ISO/IEC 8859-5"
   },
   "iso8859_6": {
+    "anchor": null,
     "article": "ISO/IEC_8859-6",
     "title": "ISO/IEC 8859-6"
   },
   "iso8859_7": {
+    "anchor": null,
     "article": "ISO/IEC_8859-7",
     "title": "ISO/IEC 8859-7"
   },
   "iso8859_8": {
+    "anchor": null,
     "article": "ISO/IEC_8859-8",
     "title": "ISO/IEC 8859-8"
   },
   "iso8859_9": {
+    "anchor": null,
     "article": "ISO/IEC_8859-9",
     "title": "ISO/IEC 8859-9"
   },
   "koi8_r": {
+    "anchor": null,
     "article": "KOI8-R",
     "title": "KOI8-R"
   },
   "koi8_t": {
+    "anchor": null,
     "article": "KOI8-T",
     "title": "KOI8-T"
   },
   "koi8_u": {
+    "anchor": null,
     "article": "KOI8-U",
     "title": "KOI8-U"
   },
   "kz1048": {
+    "anchor": "KZ-1048",
     "article": "Windows-1251",
     "title": "Windows-1251"
   },
   "latin_1": {
+    "anchor": null,
     "article": "ISO/IEC_8859-1",
     "title": "ISO/IEC 8859-1"
   },
   "mac_arabic": {
+    "anchor": null,
     "article": "MacArabic_encoding",
     "title": "MacArabic encoding"
   },
   "mac_croatian": {
+    "anchor": null,
     "article": "Mac_OS_Croatian_encoding",
     "title": "Mac OS Croatian encoding"
   },
   "mac_cyrillic": {
+    "anchor": null,
     "article": "Mac_OS_Cyrillic_encoding",
     "title": "Mac OS Cyrillic encoding"
   },
-  "mac_farsi": {
-    "article": "MacFarsi_encoding",
-    "title": null
-  },
   "mac_greek": {
+    "anchor": null,
     "article": "MacGreek_encoding",
     "title": "Mac OS Greek encoding"
   },
   "mac_iceland": {
+    "anchor": null,
     "article": "Mac_OS_Icelandic_encoding",
     "title": "Mac OS Icelandic encoding"
   },
   "mac_latin2": {
+    "anchor": null,
     "article": "Mac_OS_Central_European_encoding",
     "title": "Mac OS Central European encoding"
   },
   "mac_roman": {
+    "anchor": null,
     "article": "Mac_OS_Roman",
     "title": "Mac OS Roman"
   },
   "mac_romanian": {
+    "anchor": null,
     "article": "Mac_OS_Romanian_encoding",
     "title": "Mac OS Romanian encoding"
   },
   "mac_turkish": {
+    "anchor": null,
     "article": "Mac_OS_Turkish_encoding",
     "title": "Mac OS Turkish encoding"
   },
   "tis_620": {
+    "anchor": null,
     "article": "Thai_Industrial_Standard_620-2533",
     "title": "Thai Industrial Standard 620-2533"
   }
