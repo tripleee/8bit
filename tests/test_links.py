@@ -13,8 +13,9 @@ Typical workflow
 
    The test is skipped with a message; commit the snapshot file.
 
-2. Subsequent runs compare live Wikipedia titles against the
-   snapshot.  A mismatch means the link needs human review.
+2. Subsequent runs compare live Wikipedia titles and section
+   anchors against the snapshot.  A mismatch means the link
+   needs human review.
 
 3. After reviewing and fixing a stale link, delete the snapshot
    and repeat from step 1, or manually update the JSON entry.
@@ -33,11 +34,16 @@ import pytest
 bit = importlib.import_module("8bit")
 
 SNAPSHOT = Path(__file__).parent / "wikipedia_snapshots.json"
-# The action API accepts up to 50 titles per request via '|'
-_WP_API = (
+# action=query for title/existence checks (batch up to 50)
+_WP_QUERY = (
     "https://en.wikipedia.org/w/api.php"
     "?action=query&prop=info&redirects=1&format=json"
     "&titles={}"
+)
+# action=parse for section anchor enumeration (one page at a time)
+_WP_SECTIONS = (
+    "https://en.wikipedia.org/w/api.php"
+    "?action=parse&prop=sections&format=json&page={}"
 )
 _HEADERS = {
     "User-Agent": "8bit-test/1.0 (github.com/tripleee/8bit)"
@@ -46,12 +52,11 @@ _HEADERS = {
 
 def _extract_links():
     """
-    Return {encoding: article_path} for all Wikipedia links
-    produced by encodingtable().
+    Return {encoding: {'article': path, 'anchor': str_or_None}}
+    for all Wikipedia links in encodingtable() output.
 
-    article_path is the raw path component after /wiki/ with
-    any #section anchor stripped, since the API operates on
-    page titles rather than sections.
+    The article path is the component after /wiki/ and before any
+    #fragment; the anchor is the fragment (without #) or None.
     """
     encs = bit.get_encodings()
     html = bit.HtmlFormatter().encodingtable(encs)
@@ -60,17 +65,20 @@ def _extract_links():
         r'([^<]+)</a>',
         html,
     )
-    return {enc: art.split('#')[0] for art, enc in found}
+    result = {}
+    for raw, enc in found:
+        parts = raw.split('#', 1)
+        result[enc] = {
+            'article': parts[0],
+            'anchor': parts[1] if len(parts) > 1 else None,
+        }
+    return result
 
 
 def _fetch_titles(article_paths):
     """
-    Return {article_path: canonical_title_or_None} for every
-    path in article_paths.  Uses the Wikipedia action API in
-    batches of 50, with a 1-second pause between batches.
-
-    The API normalises underscores to spaces and follows
-    redirects; the returned title is the canonical page title.
+    Return {article_path: canonical_title_or_None}.
+    Uses Wikipedia action=query in batches of up to 50.
     """
     article_paths = list(article_paths)
     result = {}
@@ -78,15 +86,14 @@ def _fetch_titles(article_paths):
         if i:
             time.sleep(1)
         batch = article_paths[i:i + 50]
-        titles_param = '|'.join(
+        param = '|'.join(
             urllib.parse.quote(a, safe='/') for a in batch)
-        url = _WP_API.format(titles_param)
-        req = urllib.request.Request(url, headers=_HEADERS)
+        req = urllib.request.Request(
+            _WP_QUERY.format(param), headers=_HEADERS)
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read())
 
         query = data['query']
-        # Build forward chain: input → normalised → redirected
         norm = {
             n['from']: n['to']
             for n in query.get('normalized', [])
@@ -98,7 +105,6 @@ def _fetch_titles(article_paths):
         by_title = {
             p['title']: p for p in query['pages'].values()
         }
-
         for art in batch:
             step = norm.get(art, art)
             step = redir.get(step, step)
@@ -110,18 +116,32 @@ def _fetch_titles(article_paths):
     return result
 
 
+def _fetch_anchors(article_path):
+    """
+    Return the set of section anchor strings on the page,
+    or None if the page cannot be parsed (missing or API error).
+    """
+    quoted = urllib.parse.quote(article_path, safe='/')
+    req = urllib.request.Request(
+        _WP_SECTIONS.format(quoted), headers=_HEADERS)
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        data = json.loads(resp.read())
+    if 'error' in data:
+        return None
+    return {s['anchor'] for s in data['parse']['sections']}
+
+
 @pytest.mark.network
 class TestWikipediaLinks:
     """
-    Verify that every Wikipedia link in the encoding table HTML
-    still resolves to the same canonical page title as when the
-    snapshot was taken.
+    Verify that every Wikipedia link — including #section anchors
+    — in the encoding table HTML still resolves correctly.
 
-    - title unchanged → PASS
-    - page missing    → FAIL (needs review)
-    - title changed   → FAIL (needs review)
-    - new link added  → FAIL (update snapshot)
-    - link removed    → FAIL (update snapshot)
+    - title unchanged, anchor present → PASS
+    - page missing                    → FAIL (needs review)
+    - title changed                   → FAIL (needs review)
+    - anchor absent from page         → FAIL (needs review)
+    - new/removed links               → FAIL (update snapshot)
     """
 
     def test_links_against_snapshot(self):
@@ -129,14 +149,19 @@ class TestWikipediaLinks:
         assert links, (
             "encodingtable() produced no Wikipedia links")
 
-        # Fetch all unique article titles in one batched call
-        unique = list(set(links.values()))
-        titles = _fetch_titles(unique)
+        unique_articles = list({
+            info['article'] for info in links.values()
+        })
+        titles = _fetch_titles(unique_articles)
 
         if not SNAPSHOT.exists():
             snapshot = {
-                enc: {'article': art, 'title': titles[art]}
-                for enc, art in sorted(links.items())
+                enc: {
+                    'article': info['article'],
+                    'anchor': info['anchor'],
+                    'title': titles.get(info['article']),
+                }
+                for enc, info in sorted(links.items())
             }
             SNAPSHOT.write_text(
                 json.dumps(snapshot, indent=2, sort_keys=True)
@@ -149,6 +174,13 @@ class TestWikipediaLinks:
 
         snapshot = json.loads(SNAPSHOT.read_text())
         problems = []
+        anchors_cache = {}
+
+        def get_anchors(art):
+            if art not in anchors_cache:
+                time.sleep(0.3)
+                anchors_cache[art] = _fetch_anchors(art)
+            return anchors_cache[art]
 
         for enc in sorted(set(links) | set(snapshot)):
             if enc not in links:
@@ -157,23 +189,31 @@ class TestWikipediaLinks:
                 )
                 continue
             if enc not in snapshot:
+                info = links[enc]
+                art = info['article']
+                frag = (f"#{info['anchor']}"
+                        if info['anchor'] else "")
                 problems.append(
-                    f"{enc}: new link {links[enc]!r} "
-                    f"(title: {titles.get(links[enc])!r})"
+                    f"{enc}: new link {art!r}{frag} "
+                    f"(title: {titles.get(art)!r})"
                     " — add to snapshot"
                 )
                 continue
 
             ref = snapshot[enc]
-            art = links[enc]
+            info = links[enc]
+            art = info['article']
+            anchor = info['anchor']
+            ref_anchor = ref.get('anchor')
 
-            if art != ref['article']:
-                # URL changed; title may not be in our batch
-                t = titles.get(art) or next(
-                    iter(_fetch_titles([art]).values()))
+            if art != ref['article'] or anchor != ref_anchor:
+                t = titles.get(art)
+                old = ref['article'] + (
+                    f"#{ref_anchor}" if ref_anchor else "")
+                new = art + (f"#{anchor}" if anchor else "")
                 problems.append(
                     f"{enc}: URL changed "
-                    f"{ref['article']!r} → {art!r} "
+                    f"{old!r} → {new!r} "
                     f"(now: {t!r}); needs review"
                 )
                 continue
@@ -184,12 +224,27 @@ class TestWikipediaLinks:
                     f"{enc} → {art!r}: "
                     "page deleted; needs review"
                 )
-            elif title != ref['title']:
+                continue
+
+            if title != ref['title']:
                 problems.append(
                     f"{enc} → {art!r}: title changed "
                     f"{ref['title']!r} → {title!r}; "
                     "needs review"
                 )
+
+            if anchor:
+                sections = get_anchors(art)
+                if sections is None:
+                    problems.append(
+                        f"{enc} → {art}#{anchor}: "
+                        "cannot fetch sections; needs review"
+                    )
+                elif anchor not in sections:
+                    problems.append(
+                        f"{enc} → {art}#{anchor}: "
+                        "section no longer exists; needs review"
+                    )
 
         if problems:
             pytest.fail(
