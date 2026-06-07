@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "8bit"
-version = "0.8.0"
+version = "0.9.0"
 description = "Table of legacy 8-bit encodings, and command-line decoding tool"
 readme = "README.md"
 license = {file = "LICENSE"}
